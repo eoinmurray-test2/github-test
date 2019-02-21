@@ -1,0 +1,40 @@
+'use strict';
+var arrayUnique = require('array-uniq');
+
+const getUsernames = function (str, opts) {
+	if (typeof str !== 'string') {
+		throw new TypeError('Expected a string');
+	}
+
+	opts = opts || {};
+	opts.unique = opts.unique || false;
+
+	var users = str.match(/@[a-zA-Z0-9_-\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+/igm);
+
+	if (!users) {
+		return [];
+	}
+
+	if (opts.unique && opts.nameOnly) {
+		return arrayUnique(
+			users.map(function (user) {
+				return user.replace(/^@/, '');
+			})
+		);
+	}
+
+	if (opts.unique) {
+		return arrayUnique(users);
+	}
+
+	if (opts.nameOnly) {
+		return users.map(function (user) {
+			return user.replace(/^@/, '');
+		});
+	}
+	return users;
+};
+
+module.exports = getUsernames
+
+// console.log(getUsernames('@eoin-murray is cool, @HelenaDOM is not', { nameOnly: true }))
